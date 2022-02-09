@@ -1,25 +1,3 @@
-<!-- <html>
-<head>
-    <script src="https://cdn.jsdelivr.net/npm/brython@3/brython.min.js">
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/brython@3/brython_stdlib.js">
-    </script>
-</head>
-<body onload="brython()">
-    <script type="text/python">
-        from browser import document
-        from browser.widgets.dialog import InfoDialog
-
-        def click(ev):
-            InfoDialog("Hello", f"Hello, {document['zone'].value} !")
-
-        # bind event 'click' on button to function echo
-        document["echo"].bind("click", click)</script>
-    <input id="zone">
-<button id="echo">click !</button>
-</body>
-</html> -->
-
 <html>
 
 <head>
@@ -33,58 +11,51 @@
 
 <body onload="brython()">
     <script type="text/python">
-        from browser import document
-        from browser.widgets.dialog import InfoDialog
-        import PIL
+        from browser import document, html, window
 
-        def click(ev):
-            InfoDialog("Hello", f"Hello, {document['zone'].value} !")
+        def showimg(ev):
+            panel = document['slide1']
+            panel.clear()
 
-        # bind event 'click' on button to function echo
-        document["echo"].bind("click", click)
+            img = document['myfile'].files[0]
+
+            panel <= html.IMG(src=window.URL.createObjectURL(img), width=300, height=300)
+
+        document["echo"].bind("click", showimg)
     </script>
-    <input id="zone">
-<button id="echo">click !</button>
+    
+    <label for="myfile">Select a file:</label>
+    <input type="file" id="myfile" name="myfile" multiple><br><br>
 
-<!-- <input type="file" id="myfile" name="myfile" multiple><br><br>
+    <button id="echo">load</button>
 
-<div class="outer">
 
-<div class="wrapper">   
-    <div id="slider4" class="text-center">
-        <div class="slide">
-            <img src="">
-        </div>
-    </div>
-</div>
 
-<div class="wrapper">   
-    <div id="slider4" class="text-center">
-        <div class="slide">1</div>
-        <div class="slide">2</div>
-        <div class="slide">3</div>
-        <div class="slide">4</div>
-    </div>
-</div>
 
-<div class="wrapper">   
-    <div id="slider4" class="text-center">
-        <div class="slide">1</div>
-        <div class="slide">2</div>
-        <div class="slide">3</div>
-        <div class="slide">4</div>
-    </div>
-</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class="outer">
 
 <div class="wrapper">   
-    <div id="slider4" class="text-center">
-        <div class="slide">1</div>
-        <div class="slide">2</div>
-        <div class="slide">3</div>
-        <div class="slide">4</div>
+    <div id="slider1" class="text-center">
+        <div class="slide" id="slide1"></div>
     </div>
 </div>
 </div>
-</body> -->
+</body>
 
 </html>
