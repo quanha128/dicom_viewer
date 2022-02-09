@@ -1,0 +1,90 @@
+<!-- <html>
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/brython@3/brython.min.js">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/brython@3/brython_stdlib.js">
+    </script>
+</head>
+<body onload="brython()">
+    <script type="text/python">
+        from browser import document
+        from browser.widgets.dialog import InfoDialog
+
+        def click(ev):
+            InfoDialog("Hello", f"Hello, {document['zone'].value} !")
+
+        # bind event 'click' on button to function echo
+        document["echo"].bind("click", click)</script>
+    <input id="zone">
+<button id="echo">click !</button>
+</body>
+</html> -->
+
+<html>
+
+<head>
+    <link rel="stylesheet" href="index.css">
+    <script src="https://cdn.jsdelivr.net/npm/brython@3/brython.min.js">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/brython@3/brython_stdlib.js">
+    </script>
+    <title>Index</title>
+</head>
+
+<body onload="brython()">
+    <script type="text/python">
+        from browser import document
+        from browser.widgets.dialog import InfoDialog
+        import PIL
+
+        def click(ev):
+            InfoDialog("Hello", f"Hello, {document['zone'].value} !")
+
+        # bind event 'click' on button to function echo
+        document["echo"].bind("click", click)
+    </script>
+    <input id="zone">
+<button id="echo">click !</button>
+
+<!-- <input type="file" id="myfile" name="myfile" multiple><br><br>
+
+<div class="outer">
+
+<div class="wrapper">   
+    <div id="slider4" class="text-center">
+        <div class="slide">
+            <img src="">
+        </div>
+    </div>
+</div>
+
+<div class="wrapper">   
+    <div id="slider4" class="text-center">
+        <div class="slide">1</div>
+        <div class="slide">2</div>
+        <div class="slide">3</div>
+        <div class="slide">4</div>
+    </div>
+</div>
+
+<div class="wrapper">   
+    <div id="slider4" class="text-center">
+        <div class="slide">1</div>
+        <div class="slide">2</div>
+        <div class="slide">3</div>
+        <div class="slide">4</div>
+    </div>
+</div>
+
+<div class="wrapper">   
+    <div id="slider4" class="text-center">
+        <div class="slide">1</div>
+        <div class="slide">2</div>
+        <div class="slide">3</div>
+        <div class="slide">4</div>
+    </div>
+</div>
+</div>
+</body> -->
+
+</html>
