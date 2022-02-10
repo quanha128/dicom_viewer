@@ -1,21 +1,26 @@
+from turtle import up
 from browser import document, html, window, bind, ajax
 
 
 def upload_ok(req):
-    print("all right")
+    print(req.text)
 
 def submit(event):
     for f in document["myfile"].files:
-        ajax.file_upload("/index", f, method="POST")
-            # ,oncomplete=upload_ok)
+        ajax.file_upload("/index", f, method="POST",
+        oncomplete=showimg)
 
-def showimg(ev):
-    panel = document['slide1']
-    panel.clear()
+def showimg(req):
+  if req.text == 'Finished rendering':
+    panel1 = document['slider1']
+    panel2 = document['slider2']
+    panel3 = document['slider3']
+    panel1.clear()
+    panel2.clear()
+    panel3.clear()
 
-    img = document['myfile'].files[0]
-    print(window.URL.createObjectURL(img))
-
-    panel <= html.IMG(src=window.URL.createObjectURL(img), width=300, height=300)
+    panel1 <= html.IMG(src='/static/img/axial.png')
+    panel2 <= html.IMG(src='/static/img/sagittal.png')
+    panel3 <= html.IMG(src='/static/img/coronal.png')
 
 document["loadbtn"].bind("click", submit)

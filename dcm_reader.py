@@ -8,12 +8,8 @@ from os.path import join, dirname, realpath
 IMG_FOLDER = join(dirname(realpath(__file__)), 'static/img/')
 DCM_FOLDER = join(dirname(realpath(__file__)), 'static/dcm/')
 
-def read(path):
+def read():
   slices = []
-
-  # for fname in glob.glob(join(DCM_FOLDER, '*.dcm'), recursive=False):
-  #     print("loading: {}".format(fname))
-  #     slices.append(pydicom.dcmread(fname))
 
   files = glob.glob(join(DCM_FOLDER, '*.dcm'))
   files = sorted(files)

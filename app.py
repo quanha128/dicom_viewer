@@ -2,7 +2,7 @@ import os
 import dcm_reader
 from os.path import join, dirname, realpath
 
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 from werkzeug.utils import secure_filename
 
 
@@ -37,12 +37,17 @@ def create_app(test_config=None):
         return render_template('index.html')
 
       if request.method == 'POST':
+        # get files
         file = request.files['filetosave']
-        # print(file)
         filename = secure_filename(file.filename)
         filepath = os.path.join(UPLOAD_FOLDER, filename)
+
+        # save files
         file.save(filepath)
-        dcm_reader.read(filepath)
-        return 'POSTED'
+
+        # read the files
+        dcm_reader.read()
+        
+        return 'Finished rendering'
 
     return app
