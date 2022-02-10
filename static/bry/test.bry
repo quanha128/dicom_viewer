@@ -1,0 +1,21 @@
+from browser import document, html, window, bind, ajax
+
+
+def upload_ok(req):
+    print("all right")
+
+def submit(event):
+    for f in document["myfiles"].files:
+        ajax.file_upload("/index", f, method="POST",
+            oncomplete=upload_ok)
+
+def showimg(ev):
+    panel = document['slide1']
+    panel.clear()
+
+    img = document['myfile'].files[0]
+    print(window.URL.createObjectURL(img))
+
+    panel <= html.IMG(src=window.URL.createObjectURL(img), width=300, height=300)
+
+document["echo"].bind("click", submit)

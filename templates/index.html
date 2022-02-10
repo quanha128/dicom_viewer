@@ -10,68 +10,35 @@
 </head>
 
 <body onload="brython()">
-    <script type="text/python">
-        from browser import document, html, window
-
-        def showimg(ev):
-            panel = document['slide1']
-            panel.clear()
-
-            img = document['myfile'].files[0]
-            print(window.URL.createObjectURL(img))
-
-            panel <= html.IMG(src=window.URL.createObjectURL(img), width=300, height=300)
-
-        document["echo"].bind("click", showimg)
-    </script>
+    <script type="text/python"></script>
     
     <label for="myfile">Select a file:</label>
     <input type="file" id="myfile" name="myfile" multiple><br><br>
 
     <button id="echo">load</button>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    
     <div class="outer">
-
-<div class="wrapper">   
-    <div id="slider1" class="text-center">
-        <div class="slide" id="slide1"></div>
+        <div class="wrapper">   
+            <div id="slider1" class="text-center">
+                <div class="slide" id="slide1">Axial</div>
+            </div>
+        </div>
+        <div class="wrapper">   
+          <div id="slider2" class="text-center">
+              <div class="slide">Sagittal</div>
+          </div>
+        </div>
+        <div class="wrapper">   
+          <div id="slider3" class="text-center">
+              <div class="slide">Coronal</div>
+          </div>
+        </div>
+        <div class="wrapper">   
+          <div id="slider4" class="text-center">
+              <div class="slide">3D</div>
+          </div>
+        </div>
     </div>
-</div>
-<div class="wrapper">   
-  <div id="slider2" class="text-center">
-      <div class="slide"></div>
-  </div>
-</div>
-<div class="wrapper">   
-  <div id="slider3" class="text-center">
-      <div class="slide"></div>
-  </div>
-</div>
-<div class="wrapper">   
-  <div id="slider4" class="text-center">
-      <div class="slide"></div>
-  </div>
-</div>
-</div>
 </body>
 
 </html>
