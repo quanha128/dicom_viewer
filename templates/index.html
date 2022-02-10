@@ -10,12 +10,13 @@
 </head>
 
 <body onload="brython()">
-    <script type="text/python"></script>
+    <script type="text/python" src="{{ url_for('static', filename='bry/test.bry') }}"></script>
     
-    <label for="myfile">Select a file:</label>
-    <input type="file" id="myfile" name="myfile" multiple><br><br>
+    <form method="POST" action="/index" enctype="multipart/form-data">
+      <input type="file" id="myfile" name="myfile" accept=".dcm" multiple><br><br>
+    </form>
 
-    <button id="echo">load</button>
+    <button id="loadbtn">load</button>
     
     <div class="outer">
         <div class="wrapper">   

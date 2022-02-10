@@ -5,7 +5,7 @@ def upload_ok(req):
     print("all right")
 
 def submit(event):
-    for f in document["myfiles"].files:
+    for f in document["myfile"].files:
         ajax.file_upload("/index", f, method="POST",
             oncomplete=upload_ok)
 
@@ -18,4 +18,4 @@ def showimg(ev):
 
     panel <= html.IMG(src=window.URL.createObjectURL(img), width=300, height=300)
 
-document["echo"].bind("click", submit)
+document["loadbtn"].bind("click", submit)
