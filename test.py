@@ -38,20 +38,26 @@ for i, s in enumerate(slices):
   img3d[:, :, i] = img2d
 
 # plot 3 orthogonal slices
-a1 = plt.subplot(2, 2, 1)
-plt.imshow(img3d[:, :, img_shape[2]//2])
-a1.set_aspect(ax_aspect)
+# a1 = plt.subplot(2, 2, 1)
+# plt.imshow(img3d[:, :, img_shape[2]//2])
+# a1.set_aspect(ax_aspect)
 
-a2 = plt.subplot(2, 2, 2)
+# a2 = plt.subplot(2, 2, 2)
+# plt.imshow(img3d[:, img_shape[1]//2, :])
+# a2.set_aspect(sag_aspect)
+
+# a3 = plt.subplot(2, 2, 3)
+# plt.imshow(img3d[img_shape[0]//2, :, :].T)
+# a3.set_aspect(cor_aspect)
+
 plt.imshow(img3d[:, img_shape[1]//2, :])
-a2.set_aspect(sag_aspect)
+plt.axis('off')
+plt.savefig('sagittal.png', bbox_inches='tight', pad_inches = 0)
 
-a3 = plt.subplot(2, 2, 3)
+plt.imshow(img3d[:, :, img_shape[2]//2])
+plt.axis('off')
+plt.savefig('axial.png', bbox_inches='tight', pad_inches = 0)
+
 plt.imshow(img3d[img_shape[0]//2, :, :].T)
-a3.set_aspect(cor_aspect)
-
-plt.savefig('full.png')
-
-#axial
-# img = Image.fromarray(img3d[:, :, img_shape[2]//2], 'RGB')
-# img.save('my.png')
+plt.axis('off')
+plt.savefig('coronal.png', bbox_inches='tight', pad_inches = 0)
