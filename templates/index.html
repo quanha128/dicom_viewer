@@ -1,7 +1,7 @@
-<html>
+<!DOCTYPE html>
 
 <head>
-    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
     <script src="https://cdn.jsdelivr.net/npm/brython@3/brython.min.js">
     </script>
     <script src="https://cdn.jsdelivr.net/npm/brython@3/brython_stdlib.js">
@@ -18,6 +18,7 @@
             panel.clear()
 
             img = document['myfile'].files[0]
+            print(window.URL.createObjectURL(img))
 
             panel <= html.IMG(src=window.URL.createObjectURL(img), width=300, height=300)
 
@@ -54,6 +55,21 @@
     <div id="slider1" class="text-center">
         <div class="slide" id="slide1"></div>
     </div>
+</div>
+<div class="wrapper">   
+  <div id="slider2" class="text-center">
+      <div class="slide"></div>
+  </div>
+</div>
+<div class="wrapper">   
+  <div id="slider3" class="text-center">
+      <div class="slide"></div>
+  </div>
+</div>
+<div class="wrapper">   
+  <div id="slider4" class="text-center">
+      <div class="slide"></div>
+  </div>
 </div>
 </div>
 </body>
