@@ -8,11 +8,19 @@ from os.path import join, dirname, realpath
 IMG_FOLDER = join(dirname(realpath(__file__)), 'static/img/')
 DCM_FOLDER = join(dirname(realpath(__file__)), 'static/dcm/')
 
-def read():
+def read(path):
   slices = []
 
-  for fname in glob.glob(join(DCM_FOLDER, '*.dcm'), recursive=False):
-      print("loading: {}".format(fname))
+  # for fname in glob.glob(join(DCM_FOLDER, '*.dcm'), recursive=False):
+  #     print("loading: {}".format(fname))
+  #     slices.append(pydicom.dcmread(fname))
+
+  files = glob.glob(join(DCM_FOLDER, '*.dcm'))
+  files = sorted(files)
+  # print(files)
+
+  for fname in files:
+      # print("loading: {}".format(fname))
       slices.append(pydicom.dcmread(fname))
 
   # pixel aspects, assuming all slices are the same
@@ -32,18 +40,21 @@ def read():
     img2d = s.pixel_array
     img3d[:, :, i] = img2d
 
-  #axial
-  img = Image.fromarray(img3d[:, :, img_shape[2]//2], 'RGB')
-  img.save('my.png')
+  # plt.imshow(pydicom.dcmread(path).pixel_array, cmap=plt.cm.bone)
+  # plt.axis('off')
+  # plt.savefig(join(IMG_FOLDER, 'rendered.png'), bbox_inches='tight', pad_inches = 0)
 
-  
-  # fig = plt.figure()
-  # # axial aspect
-  # a1 = fig.add_subplot(2, 2, 1)
-  # a1.imshow(img3d[:, :, img_shape[2]//2])
+  #axial
+  # img = Image.fromarray(img3d[:, :, img_shape[2]//2], 'RGB')
+  # img.save('my.png')
+
+  # axial aspect
+  # a1 = plt.subplot(2, 2, 1)
+  plt.imshow(img3d[:, :, img_shape[2]//2])
+  plt.axis('off')
   # a1.set_aspect(ax_aspect)
+  plt.savefig(join(IMG_FOLDER, 'axial.png'), bbox_inches='tight', pad_inches = 0)
   # extent = a1.get_window_extent().transformed(fig.dpi_scale_trans.inverted())
-  # fig.savefig(join(IMG_FOLDER, 'axial.png'), bbox_inches=extent)
 
   # # sagittal aspect
   # a2 = fig.add_subplot(2, 2, 2)

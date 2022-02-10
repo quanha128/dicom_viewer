@@ -6,8 +6,8 @@ def upload_ok(req):
 
 def submit(event):
     for f in document["myfile"].files:
-        ajax.file_upload("/index", f, method="POST",
-            oncomplete=upload_ok)
+        ajax.file_upload("/index", f, method="POST")
+            # ,oncomplete=upload_ok)
 
 def showimg(ev):
     panel = document['slide1']

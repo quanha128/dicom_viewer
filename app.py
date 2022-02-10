@@ -38,11 +38,11 @@ def create_app(test_config=None):
 
       if request.method == 'POST':
         file = request.files['filetosave']
-        print(file)
+        # print(file)
         filename = secure_filename(file.filename)
         filepath = os.path.join(UPLOAD_FOLDER, filename)
         file.save(filepath)
-        dcm_reader.read()
+        dcm_reader.read(filepath)
         return 'POSTED'
 
     return app

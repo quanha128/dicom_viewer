@@ -9,9 +9,16 @@ DCM_FOLDER = join(dirname(realpath(__file__)), 'static/dcm/')
 
 slices = []
 
-for fname in glob.glob(join(DCM_FOLDER, '*.dcm'), recursive=False):
-    print("loading: {}".format(fname))
+files = glob.glob(join(DCM_FOLDER, '*.dcm'))
+files = sorted(files)
+# print(files)
+
+for fname in files:
+    # print("loading: {}".format(fname))
     slices.append(pydicom.dcmread(fname))
+
+# slices = sorted(slices)
+# print(slices)
 
 # pixel aspects, assuming all slices are the same
 ps = slices[0].PixelSpacing
@@ -30,6 +37,21 @@ for i, s in enumerate(slices):
   img2d = s.pixel_array
   img3d[:, :, i] = img2d
 
+# plot 3 orthogonal slices
+a1 = plt.subplot(2, 2, 1)
+plt.imshow(img3d[:, :, img_shape[2]//2])
+a1.set_aspect(ax_aspect)
+
+a2 = plt.subplot(2, 2, 2)
+plt.imshow(img3d[:, img_shape[1]//2, :])
+a2.set_aspect(sag_aspect)
+
+a3 = plt.subplot(2, 2, 3)
+plt.imshow(img3d[img_shape[0]//2, :, :].T)
+a3.set_aspect(cor_aspect)
+
+plt.savefig('full.png')
+
 #axial
-img = Image.fromarray(img3d[:, :, img_shape[2]//2], 'RGB')
-img.save('my.png')
+# img = Image.fromarray(img3d[:, :, img_shape[2]//2], 'RGB')
+# img.save('my.png')
