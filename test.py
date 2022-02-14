@@ -1,8 +1,9 @@
-
+#%%
 import pydicom
 import numpy as np
-from mpl_toolkits import mplot3d
 import matplotlib.pyplot as plt
+import mpl_toolkits
+from mpl_toolkits.mplot3d import Axes3D
 import sys
 import glob
 import surf2stl
@@ -13,18 +14,21 @@ points = np.random.rand(100, 3)
 # mesh.plot(point_size=10, style='points')
 
 # print(points)
-x = np.outer(np.linspace(-2, 2, 10), np.ones(10))
-y = x.copy().T
-z = np.cos(x ** 2 + y ** 3)
+x = np.random.rand(100)
+y = np.random.rand(100)
+z = np.random.rand(100)
  
 fig = plt.figure()
  
 # syntax for 3-D plotting
-ax = plt.axes(projection ='3d')
+axis = mpl_toolkits.mplot3d.Axes3D(fig)
+
+axis.scatter(x, y, z)
  
 # syntax for plotting
-ax.plot_surface(x, y, z, cmap ='viridis', edgecolor ='green')
-ax.set_title('Surface plot geeks for geeks')
-# plt.show()
+# ax.plot_surface(x, y, z, cmap ='viridis', edgecolor ='green')
+# ax.set_title('Surface plot geeks for geeks')
+fig.show()
 
-surf2stl.write('3d-model-graph.stl', x, y, z)
+surf2stl.write('points.stl', x, y, z)
+# %%

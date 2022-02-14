@@ -11,12 +11,12 @@ def read():
   slices = []
 
   files = glob.glob(join(DCM_FOLDER, '*.dcm'))
-  files = sorted(files)
-  # print(files)
 
   for fname in files:
       # print("loading: {}".format(fname))
       slices.append(pydicom.dcmread(fname))
+
+  slices = sorted(slices, key=lambda s:s.ImagePositionPatient[2])
 
   # pixel aspects, assuming all slices are the same
   ps = slices[0].PixelSpacing
@@ -35,17 +35,24 @@ def read():
     img2d = s.pixel_array
     img3d[:, :, i] = img2d
 
-  # axial
-  plt.imshow(img3d[:, :, img_shape[2]//2])
-  plt.axis('off')
-  plt.savefig(join(IMG_FOLDER, 'axial.png'), bbox_inches='tight', pad_inches = 0)
+  print(img3d)
+  print(img3d.shape)
 
-  # sagittal
-  plt.imshow(img3d[:, img_shape[1]//2, :])
-  plt.axis('off')
-  plt.savefig(join(IMG_FOLDER, 'sagittal.png'), bbox_inches='tight', pad_inches = 0)
+  # # axial
+  # plt.imshow(img3d[:, :, img_shape[2]//2])
+  # plt.axis('off')
+  # # plt.savefig(join(IMG_FOLDER, 'axial.png'), bbox_inches='tight', pad_inches = 0)
+
+  # # sagittal
+  # plt.imshow(img3d[:, img_shape[1]//2, :])
+  # plt.axis('off')
+  # plt.savefig(join(IMG_FOLDER, 'sagittal.png'), bbox_inches='tight', pad_inches = 0)
   
-  # coronal
-  plt.imshow(img3d[img_shape[0]//2, :, :].T)
-  plt.axis('off')
-  plt.savefig(join(IMG_FOLDER, 'coronal.png'), bbox_inches='tight', pad_inches = 0)
+  # # coronal
+  # plt.imshow(img3d[img_shape[0]//2, :, :].T)
+  # plt.axis('off')
+  # plt.savefig(join(IMG_FOLDER, 'coronal.png'), bbox_inches='tight', pad_inches = 0)
+
+  
+
+read()
