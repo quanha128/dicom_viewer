@@ -1,3 +1,4 @@
+from distutils.log import debug
 import os
 import dcm_reader
 from os.path import join, dirname, realpath
@@ -44,10 +45,18 @@ def create_app(test_config=None):
 
         # save files
         file.save(filepath)
-
-        # read the files
-        dcm_reader.read()
         
-        return 'Finished rendering'
+        return 'Finished uploading'
+
+    # route to index
+    @app.route('/render', methods=('GET', 'POST'))
+    def render():
+        if request.method == 'GET':
+            return 'KEKW'
+        
+        if request.method == 'POST':
+            # read the files
+            dcm_reader.read()
+            return 'Finished rendering'
 
     return app

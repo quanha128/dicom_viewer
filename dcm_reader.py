@@ -2,7 +2,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pydicom
 import glob
-from PIL import Image
 from os.path import join, dirname, realpath
 
 IMG_FOLDER = join(dirname(realpath(__file__)), 'static/img/')

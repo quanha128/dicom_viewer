@@ -1,5 +1,5 @@
 from turtle import up
-from browser import document, html, window, bind, ajax
+from browser import document, html, ajax
 
 
 def upload_ok(req):
@@ -8,10 +8,15 @@ def upload_ok(req):
 def submit(event):
     for f in document["myfile"].files:
         ajax.file_upload("/index", f, method="POST",
-        oncomplete=showimg)
+        oncomplete=upload_ok)
+
+def req_render(event):
+    ajax.post("/render", oncomplete=showimg)
 
 def showimg(req):
   if req.text == 'Finished rendering':
+    print("Response received")
+    # get documents
     panel1 = document['slider1']
     panel2 = document['slider2']
     panel3 = document['slider3']
@@ -19,8 +24,10 @@ def showimg(req):
     panel2.clear()
     panel3.clear()
 
+    # replace with img
     panel1 <= html.IMG(src='/static/img/axial.png')
     panel2 <= html.IMG(src='/static/img/sagittal.png')
     panel3 <= html.IMG(src='/static/img/coronal.png')
 
-document["loadbtn"].bind("click", submit)
+document["upload"].bind("click", submit)
+document["loadimg"].bind("click", req_render)
