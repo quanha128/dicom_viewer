@@ -55,17 +55,17 @@ for i, s in enumerate(slices):
 
 z, x, y = img3d.nonzero()
 
-# print(x)
-# print(len(y))
-# print(len(z))
+print(len(x))
+print(len(y))
+print(len(z))
 # print(y)
 # print(z)
 
-fig = plt.figure()
+# fig = plt.figure()
 
-axis = mpl_toolkits.mplot3d.Axes3D(fig)
+# axis = mpl_toolkits.mplot3d.Axes3D(fig)
 
-axis.scatter(x, y, z, c=z, alpha=1)
+# axis.scatter(x, y, z, c=z, alpha=1)
 
 # fig.show()
 

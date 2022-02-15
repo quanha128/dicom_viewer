@@ -3,6 +3,7 @@ import numpy as np
 import pydicom
 import glob
 from os.path import join, dirname, realpath
+import pyvista as pv
 
 IMG_FOLDER = join(dirname(realpath(__file__)), 'static/img/')
 DCM_FOLDER = join(dirname(realpath(__file__)), 'static/dcm/')
@@ -35,24 +36,41 @@ def read():
     img2d = s.pixel_array
     img3d[:, :, i] = img2d
 
-  print(img3d)
-  print(img3d.shape)
+  # axial
+  plt.imshow(img3d[:, :, img_shape[2]//2])
+  plt.axis('off')
+  # plt.savefig(join(IMG_FOLDER, 'axial.png'), bbox_inches='tight', pad_inches = 0)
 
-  # # axial
-  # plt.imshow(img3d[:, :, img_shape[2]//2])
-  # plt.axis('off')
-  # # plt.savefig(join(IMG_FOLDER, 'axial.png'), bbox_inches='tight', pad_inches = 0)
-
-  # # sagittal
-  # plt.imshow(img3d[:, img_shape[1]//2, :])
-  # plt.axis('off')
-  # plt.savefig(join(IMG_FOLDER, 'sagittal.png'), bbox_inches='tight', pad_inches = 0)
+  # sagittal
+  plt.imshow(img3d[:, img_shape[1]//2, :])
+  plt.axis('off')
+  plt.savefig(join(IMG_FOLDER, 'sagittal.png'), bbox_inches='tight', pad_inches = 0)
   
-  # # coronal
-  # plt.imshow(img3d[img_shape[0]//2, :, :].T)
-  # plt.axis('off')
-  # plt.savefig(join(IMG_FOLDER, 'coronal.png'), bbox_inches='tight', pad_inches = 0)
+  # coronal
+  plt.imshow(img3d[img_shape[0]//2, :, :].T)
+  plt.axis('off')
+  plt.savefig(join(IMG_FOLDER, 'coronal.png'), bbox_inches='tight', pad_inches = 0)
 
-  
+  # Create the 3D NumPy array of spatially referenced data
+  # This is spatially referenced such that the grid is 20 by 5 by 10
+  #   (nx by ny by nz)
+  # values = np.linspace(0, 10, 1000).reshape((20, 5, 10))
+  values = img3d
+  values.shape
 
-read()
+  # Create the spatial reference
+  grid = pv.UniformGrid()
+
+  # Set the grid dimensions: shape because we want to inject our values on the
+  #   POINT data
+  grid.dimensions = values.shape
+
+  # Edit the spatial reference
+  # grid.origin = (100, 33, 55.6)  # The bottom left corner of the data set
+  # grid.spacing = (1, 5, 2)  # These are the cell sizes along each axis
+
+  # Add the data values to the cell data
+  grid.point_data["values"] = values.flatten(order="F")  # Flatten the array!
+
+  print(grid)
+  grid.save('test.vtk')
