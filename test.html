@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>My first three.js app</title>
+		<style>
+			body { margin: 0; }
+		</style>
+	</head>
+	<body>
+		<script src="https://threejs.org/build/three.js"></script>
+    <script src="https://threejs.org/examples/js/loaders/VTKLoader.js"></script>
+		<script>
+			const scene = new THREE.Scene();
+			const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+
+			const renderer = new THREE.WebGLRenderer();
+			renderer.setSize( window.innerWidth, window.innerHeight );
+			document.body.appendChild( renderer.domElement );
+
+			// const geometry = new THREE.BoxGeometry();
+			// const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+			// const cube = new THREE.Mesh( geometry, material );
+			// scene.add( cube );
+
+      const loader = new THREE.VTKLoader();
+
+      loader.load(
+        // resource URL
+        './test.vtk',
+        // called when the resource is loaded
+        function ( vtk ) {
+
+          scene.add( vtk.scene );
+
+          gltf.animations; // Array<THREE.AnimationClip>
+          gltf.scene; // THREE.Group
+          gltf.scenes; // Array<THREE.Group>
+          gltf.cameras; // Array<THREE.Camera>
+          gltf.asset; // Object
+
+        },
+        // called while loading is progressing
+        function ( xhr ) {
+
+          console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+
+        },
+        // called when loading has errors
+        function ( error ) {
+
+          console.log( 'An error happened' );
+
+        }
+      );
+
+			camera.position.z = 5;
+      renderer.render( scene, camera );
+
+			// function animate() {
+			// 	requestAnimationFrame( animate );
+
+			// 	cube.rotation.x += 0.01;
+			// 	cube.rotation.y += 0.01;
+
+			// 	renderer.render( scene, camera );
+			// };
+
+			// animate();
+		</script>
+	</body>
+</html>

@@ -32,6 +32,7 @@ def create_app(test_config=None):
         pass
 
     # route to index
+    @app.route('/', methods=['GET'])
     @app.route('/index', methods=('GET', 'POST'))
     def index():
       if request.method == 'GET':

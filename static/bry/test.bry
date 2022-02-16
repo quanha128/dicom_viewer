@@ -1,6 +1,45 @@
-from turtle import up
-from browser import document, html, ajax
+from browser import document, html, ajax, window
 
+THREE = window.THREE
+STL = THREE.STLLoader
+
+camera = THREE.PerspectiveCamera.new(75, 1, 1, 10000)
+camera.position.z = 5
+scene = THREE.Scene.new()
+
+# geometry = THREE.BoxGeometry.new(1, 1, 1)
+# material = THREE.MeshBasicMaterial.new({"color": "#00ff00"})
+# mesh = THREE.Mesh.new(geometry, material)
+
+material = THREE.MeshPhysicalMaterial.new({
+    'color': 0xb2ffc8,
+    'metalness': 0.25,
+    'roughness': 0.1,
+    'opacity': 1.0,
+})
+
+def addob(stl):
+  mesh = THREE.Mesh.new(stl, material)
+  scene.add(mesh)
+
+loader = STL.new()
+loader.load('./static/vtk/lucy.stl',
+            # lambda stl: scene.add(stl),
+            addob,
+            lambda xhr: print((xhr.loaded / xhr.total) * 100, '% loaded'),
+            lambda e: print(e))
+
+renderer = THREE.WebGLRenderer.new()
+renderer.setSize(300, 300)
+
+# def animate(i):
+#     # note: three.js includes requestAnimationFrame shim
+#     window.requestAnimationFrame(animate)
+
+#     mesh.rotation.x += 0.01
+#     mesh.rotation.y += 0.01
+
+#     renderer.render(scene, camera)
 
 def upload_ok(req):
     print(req.text)
@@ -29,5 +68,29 @@ def showimg(req):
     panel2 <= html.IMG(src='/static/img/sagittal.png')
     panel3 <= html.IMG(src='/static/img/coronal.png')
 
+    # show 3d
+    document["slide4"] <= renderer.domElement
+    renderer.render(scene, camera)
+    # animate(0)
+    print('reached here')
+
+# def loadimg(ev):
+#   panel1 = document['slider1']
+#   panel2 = document['slider2']
+#   panel3 = document['slider3']
+#   panel1.clear()
+#   panel2.clear()
+#   panel3.clear()
+
+#   # dcm files
+#   files = document['myfile'].files[0]
+#   print(window.URL.createObjectURL(files))
+#   print(dcm_reader.read(window.URL.createObjectURL(files)))
+
+#   # render img
+#   files = document['myfile'].files[0]
+#   panel1 <= html.IMG(src=window.URL.createObjectURL(files), width=300, height=300)
+
 document["upload"].bind("click", submit)
 document["loadimg"].bind("click", req_render)
+# document["myfile"].bind("onchange", loadimg)

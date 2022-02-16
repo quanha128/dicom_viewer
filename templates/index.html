@@ -6,12 +6,18 @@
     </script>
     <script src="https://cdn.jsdelivr.net/npm/brython@3/brython_stdlib.js">
     </script>
+    <script src="https://threejs.org/build/three.js">
+    </script>
+    <script src="https://threejs.org/examples/js/loaders/STLLoader.js"></script>
+    <!-- <script src="https://threejs.org/examples/js/loaders/VTKLoader.js"></script> -->
+    <script type="text/python" src="{{ url_for('static', filename='bry/test.bry') }}">
+    </script>
+    <!-- <script type="text/python" src="{{ url_for('static', filename='bry/cude.bry') }}">
+    </script> -->
     <title>Index</title>
 </head>
 
-<body onload="brython()">
-    <script type="text/python" src="{{ url_for('static', filename='bry/test.bry') }}"></script>
-    
+<body onload="brython(1)">
     <form method="POST" action="/index" enctype="multipart/form-data">
       <input type="file" id="myfile" name="myfile" accept=".dcm" multiple><br><br>
     </form>
@@ -37,36 +43,12 @@
         </div>
         <div class="wrapper">   
           <div id="slider4" class="text-center">
-              <div class="slide">
-                <script src="https://threejs.org/build/three.js">
-                  var scene = new THREE.Scene();
-                  var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
-
-                  var renderer = new THREE.WebGLRenderer();
-                  renderer.setSize( window.innerWidth, window.innerHeight );
-                  document.body.appendChild( renderer.domElement );
-
-                  var geometry = new THREE.BoxGeometry( 1, 1, 1 );
-                  var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-                  var cube = new THREE.Mesh( geometry, material );
-                  scene.add( cube );
-
-                  camera.position.z = 5;
-
-                  var animate = function () {
-                    requestAnimationFrame( animate );
-
-                    cube.rotation.x += 0.01;
-                    cube.rotation.y += 0.01;
-
-                    renderer.render( scene, camera );
-                  };
-
-                  animate();
-                </script>
-              </div>
+              <div class="slide" id="slide4">3D</div>
           </div>
         </div>
+
+        <div id="test"></div>
+
     </div>
 </body>
 
