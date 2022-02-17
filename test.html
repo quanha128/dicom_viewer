@@ -9,7 +9,8 @@
 	</head>
 	<body>
 		<script src="https://threejs.org/build/three.js"></script>
-    <script src="https://threejs.org/examples/js/loaders/VTKLoader.js"></script>
+    <script src="https://threejs.org/examples/js/loaders/STLLoader.js"></script>
+    
 		<script>
 			const scene = new THREE.Scene();
 			const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
@@ -23,50 +24,57 @@
 			// const cube = new THREE.Mesh( geometry, material );
 			// scene.add( cube );
 
-      const loader = new THREE.VTKLoader();
+      const loader = new THREE.STLLoader();
 
-      loader.load(
-        // resource URL
-        './test.vtk',
-        // called when the resource is loaded
-        function ( vtk ) {
+      // loader.load(
+      //   // resource URL
+      //   './static/vtk/rabbit.stl',
+      //   // called when the resource is loaded
+      //   function ( stl ) {
+      //     const mesh = new THREE.Mesh(stl);
+      //     console.log(mesh);
+      //     scene.add(mesh);
 
-          scene.add( vtk.scene );
+      //     // gltf.animations; // Array<THREE.AnimationClip>
+      //     // gltf.scene; // THREE.Group
+      //     // gltf.scenes; // Array<THREE.Group>
+      //     // gltf.cameras; // Array<THREE.Camera>
+      //     // gltf.asset; // Object
 
-          gltf.animations; // Array<THREE.AnimationClip>
-          gltf.scene; // THREE.Group
-          gltf.scenes; // Array<THREE.Group>
-          gltf.cameras; // Array<THREE.Camera>
-          gltf.asset; // Object
+      //   },
+      //   // called while loading is progressing
+      //   function ( xhr ) {
 
-        },
-        // called while loading is progressing
-        function ( xhr ) {
+      //     console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
 
-          console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+      //   },
+      //   // called when loading has errors
+      //   function ( error ) {
 
-        },
-        // called when loading has errors
-        function ( error ) {
+      //     console.log( error );
 
-          console.log( 'An error happened' );
+      //   }
+      // );
 
-        }
-      );
+      const geometry = new THREE.BoxGeometry(1, 1, 1)
+      const material = new THREE.MeshBasicMaterial({"color": "#00ff00"})
+      const mesh = new THREE.Mesh(geometry, material)
+
+      scene.add(mesh)
 
 			camera.position.z = 5;
       renderer.render( scene, camera );
 
-			// function animate() {
-			// 	requestAnimationFrame( animate );
+			function animate() {
+				requestAnimationFrame( animate );
 
-			// 	cube.rotation.x += 0.01;
-			// 	cube.rotation.y += 0.01;
+				mesh.rotation.x += 0.01;
+				mesh.rotation.y += 0.01;
 
-			// 	renderer.render( scene, camera );
-			// };
+				renderer.render( scene, camera );
+			};
 
-			// animate();
+			animate();
 		</script>
 	</body>
 </html>

@@ -3,43 +3,61 @@ from browser import document, html, ajax, window
 THREE = window.THREE
 STL = THREE.STLLoader
 
-camera = THREE.PerspectiveCamera.new(75, 1, 1, 10000)
-camera.position.z = 5
+camera = THREE.PerspectiveCamera.new(0.05, 1, 0.005, 10000)
 scene = THREE.Scene.new()
+# scene.background = THREE.Color.new( 0xff0000 )
+renderer = THREE.WebGLRenderer.new()
+renderer.setSize(300, 300)
+controls = THREE.OrbitControls.new(camera, renderer.domElement)
+camera.position.z = -300
+camera.position.y += 50
+controls.update()
 
-# geometry = THREE.BoxGeometry.new(1, 1, 1)
+# geometry = THREE.BoxGeometry.new()
 # material = THREE.MeshBasicMaterial.new({"color": "#00ff00"})
 # mesh = THREE.Mesh.new(geometry, material)
 
-material = THREE.MeshPhysicalMaterial.new({
+# scene.add(mesh)
+# document["slide4"] <= renderer.domElement
+# renderer.render(scene, camera)
+
+material = THREE.MeshBasicMaterial.new({
     'color': 0xb2ffc8,
-    'metalness': 0.25,
-    'roughness': 0.1,
-    'opacity': 1.0,
 })
+
+# light = THREE.AmbientLight.new(0x404040)
+# scene.add(light)
+
+def animate(i):
+  # note: three.js includes requestAnimationFrame shim
+  window.requestAnimationFrame(animate)
+  renderer.render(scene, camera)
 
 def addob(stl):
   mesh = THREE.Mesh.new(stl, material)
+  # geometry = THREE.BoxGeometry.new()
+  # material = THREE.MeshBasicMaterial.new({"color": "#00ff00"})
+  # mesh = THREE.Mesh.new(geometry, material)
+  mesh.name = 'rabbit'
   scene.add(mesh)
+  # mesh.position.z = -300
+  document["slide4"] <= renderer.domElement
+  # renderer.render(scene, camera)
+  animate(0)
+  print('reached here')
 
 loader = STL.new()
-loader.load('./static/vtk/lucy.stl',
-            # lambda stl: scene.add(stl),
+loader.load('./static/vtk/rabbit.stl',
             addob,
-            lambda xhr: print((xhr.loaded / xhr.total) * 100, '% loaded'),
+            lambda xhr: print((xhr.loaded / xhr.total) * 100, "% loaded"),
             lambda e: print(e))
 
-renderer = THREE.WebGLRenderer.new()
-renderer.setSize(300, 300)
-
-# def animate(i):
-#     # note: three.js includes requestAnimationFrame shim
-#     window.requestAnimationFrame(animate)
-
-#     mesh.rotation.x += 0.01
-#     mesh.rotation.y += 0.01
-
-#     renderer.render(scene, camera)
+# show 3d
+# document["slide4"] <= renderer.domElement
+# print(scene.getObjectByName('rabbit'))
+# renderer.render(scene, camera)
+# # animate(0)
+# print('reached here')
 
 def upload_ok(req):
     print(req.text)
@@ -68,11 +86,7 @@ def showimg(req):
     panel2 <= html.IMG(src='/static/img/sagittal.png')
     panel3 <= html.IMG(src='/static/img/coronal.png')
 
-    # show 3d
-    document["slide4"] <= renderer.domElement
-    renderer.render(scene, camera)
-    # animate(0)
-    print('reached here')
+    
 
 # def loadimg(ev):
 #   panel1 = document['slider1']

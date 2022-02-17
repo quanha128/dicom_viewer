@@ -1,12 +1,15 @@
+from csv import writer
 import matplotlib.pyplot as plt
 import numpy as np
 import pydicom
 import glob
 from os.path import join, dirname, realpath
 import pyvista as pv
+import vtk
 
 IMG_FOLDER = join(dirname(realpath(__file__)), 'static/img/')
 DCM_FOLDER = join(dirname(realpath(__file__)), 'static/dcm/')
+VTK_FOLDER = join(dirname(realpath(__file__)), 'static/vtk/')
 
 def read():
   slices = []
@@ -73,4 +76,13 @@ def read():
   grid.point_data["values"] = values.flatten(order="F")  # Flatten the array!
 
   print(grid)
-  grid.save('test.vtk')
+  filepath = join(VTK_FOLDER, 'test.vtk')
+  grid.save(filepath, binary=True)
+  reader = vtk.vtkGenericDataObjectReader()
+  reader.SetFileName(filepath)
+  reader.Update()
+  ex = vtk.vtkOBJExporter()
+  ex.SetInput(reader)
+  ex.Update()
+  ex.Write()
+  print('reached here')
