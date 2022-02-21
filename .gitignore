@@ -5,3 +5,5 @@ convert.py
 *.mtl
 *.obj
 test.html
+*.gltf
+**/[Tt]est*

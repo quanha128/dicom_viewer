@@ -8,7 +8,10 @@
     </script>
     <script src="https://threejs.org/build/three.js">
     </script>
-    <script src="https://threejs.org/examples/js/loaders/STLLoader.js"></script>
+    <!-- <script type="module">
+      import three from 'https://cdn.skypack.dev/three';
+    </script> -->
+    <script src="https://threejs.org/examples/js/loaders/NRRDLoader.js"></script>
     <!-- <script src="https://threejs.org/examples/js/loaders/VTKLoader.js"></script> -->
     <script type="text/python" src="{{ url_for('static', filename='bry/test.bry') }}">
     </script>
@@ -24,6 +27,7 @@
     </form>
 
     <button id="upload">upload</button><br><br>
+    <!-- <div id="percentage">No file(s) loaded</div> -->
     <button id="loadimg">load img</button>
     
     <div class="outer">

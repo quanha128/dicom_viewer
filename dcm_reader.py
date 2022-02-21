@@ -6,6 +6,7 @@ import glob
 from os.path import join, dirname, realpath
 import pyvista as pv
 import vtk
+import nrrd
 
 IMG_FOLDER = join(dirname(realpath(__file__)), 'static/img/')
 DCM_FOLDER = join(dirname(realpath(__file__)), 'static/dcm/')
@@ -42,7 +43,7 @@ def read():
   # axial
   plt.imshow(img3d[:, :, img_shape[2]//2])
   plt.axis('off')
-  # plt.savefig(join(IMG_FOLDER, 'axial.png'), bbox_inches='tight', pad_inches = 0)
+  plt.savefig(join(IMG_FOLDER, 'axial.png'), bbox_inches='tight', pad_inches = 0)
 
   # sagittal
   plt.imshow(img3d[:, img_shape[1]//2, :])
@@ -58,31 +59,29 @@ def read():
   # This is spatially referenced such that the grid is 20 by 5 by 10
   #   (nx by ny by nz)
   # values = np.linspace(0, 10, 1000).reshape((20, 5, 10))
-  values = img3d
-  values.shape
+  # img3d.shape
 
   # Create the spatial reference
-  grid = pv.UniformGrid()
+  # grid = pv.UniformGrid()
 
   # Set the grid dimensions: shape because we want to inject our values on the
   #   POINT data
-  grid.dimensions = values.shape
+  # grid.dimensions = img3d.shape
 
   # Edit the spatial reference
   # grid.origin = (100, 33, 55.6)  # The bottom left corner of the data set
   # grid.spacing = (1, 5, 2)  # These are the cell sizes along each axis
 
   # Add the data values to the cell data
-  grid.point_data["values"] = values.flatten(order="F")  # Flatten the array!
+  # grid.point_data["values"] = img3d.flatten(order="F")  # Flatten the array!
 
-  print(grid)
-  filepath = join(VTK_FOLDER, 'test.vtk')
-  grid.save(filepath, binary=True)
-  reader = vtk.vtkGenericDataObjectReader()
-  reader.SetFileName(filepath)
-  reader.Update()
-  ex = vtk.vtkOBJExporter()
-  ex.SetInput(reader)
-  ex.Update()
-  ex.Write()
+  # print(grid)
+  # pl = pv.Plotter()
+  # _ = pl.add_volume(img3d, cmap='viridis')
+  # pl.export_html("brain.html")
+  # pl.show()
+  # filepath = join(VTK_FOLDER, 'test.vtk')
+  # grid.save(filepath, binary=True)
+
+  nrrd.write('output.nrrd', img3d, index_order='C')
   print('reached here')

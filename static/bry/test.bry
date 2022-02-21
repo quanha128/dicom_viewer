@@ -1,7 +1,7 @@
 from browser import document, html, ajax, window
 
 THREE = window.THREE
-STL = THREE.STLLoader
+NRRD = THREE.NRRDLoader
 
 camera = THREE.PerspectiveCamera.new(0.05, 1, 0.005, 10000)
 scene = THREE.Scene.new()
@@ -10,7 +10,6 @@ renderer = THREE.WebGLRenderer.new()
 renderer.setSize(300, 300)
 controls = THREE.OrbitControls.new(camera, renderer.domElement)
 camera.position.z = -300
-camera.position.y += 50
 controls.update()
 
 # geometry = THREE.BoxGeometry.new()
@@ -22,35 +21,40 @@ controls.update()
 # renderer.render(scene, camera)
 
 material = THREE.MeshBasicMaterial.new({
-    'color': 0xb2ffc8,
+    'color': 0x404040,
 })
 
-# light = THREE.AmbientLight.new(0x404040)
-# scene.add(light)
+light = THREE.AmbientLight.new(0x404040)
+scene.add(light)
 
 def animate(i):
   # note: three.js includes requestAnimationFrame shim
   window.requestAnimationFrame(animate)
   renderer.render(scene, camera)
 
-def addob(stl):
-  mesh = THREE.Mesh.new(stl, material)
-  # geometry = THREE.BoxGeometry.new()
-  # material = THREE.MeshBasicMaterial.new({"color": "#00ff00"})
-  # mesh = THREE.Mesh.new(geometry, material)
-  mesh.name = 'rabbit'
-  scene.add(mesh)
-  # mesh.position.z = -300
-  document["slide4"] <= renderer.domElement
-  # renderer.render(scene, camera)
-  animate(0)
-  print('reached here')
+def addob(volume):
+    # texture = THREE.DataTexture3D.new( volume.data, volume.xLength, volume.yLength, volume.zLength )
+    # texture.format = THREE.RedFormat
+    # texture.type = THREE.FloatType
+    # texture.minFilter = texture.magFilter = THREE.LinearFilter
+    # texture.unpackAlignment = 1
+    # texture.needsUpdate = True
 
-loader = STL.new()
-loader.load('./static/vtk/rabbit.stl',
+  # THREE.Mesh
+  geometry = THREE.BoxGeometry.new( volume.xLength, volume.yLength, volume.zLength )
+  geometry.translate( volume.xLength / 2 - 0.5, volume.yLength / 2 - 0.5, volume.zLength / 2 - 0.5 )
+
+  mesh = THREE.Mesh.new( geometry )
+  scene.add( mesh )
+  renderer.render( scene, camera )
+
+def percent(xhr):
+  document['percentage'].text = '{}'.format(int(xhr.loaded / xhr.total * 100)) + "% loaded\n"
+
+loader = NRRD.new()
+loader.load('./static/vtk/output.nrrd',
             addob,
-            lambda xhr: print((xhr.loaded / xhr.total) * 100, "% loaded"),
-            lambda e: print(e))
+            lambda xhr: print((xhr.loaded / xhr.total * 100), "% loaded"))
 
 # show 3d
 # document["slide4"] <= renderer.domElement
