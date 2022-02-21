@@ -7,3 +7,4 @@ convert.py
 test.html
 *.gltf
 **/[Tt]est*
+*.nrrd
