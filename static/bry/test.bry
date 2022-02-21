@@ -12,20 +12,12 @@ controls = THREE.OrbitControls.new(camera, renderer.domElement)
 camera.position.z = -300
 controls.update()
 
-# geometry = THREE.BoxGeometry.new()
-# material = THREE.MeshBasicMaterial.new({"color": "#00ff00"})
-# mesh = THREE.Mesh.new(geometry, material)
-
-# scene.add(mesh)
-# document["slide4"] <= renderer.domElement
-# renderer.render(scene, camera)
-
 material = THREE.MeshBasicMaterial.new({
     'color': 0x404040,
 })
 
-light = THREE.AmbientLight.new(0x404040)
-scene.add(light)
+# light = THREE.AmbientLight.new(0x404040)
+# scene.add(light)
 
 def animate(i):
   # note: three.js includes requestAnimationFrame shim
@@ -46,6 +38,7 @@ def addob(volume):
 
   mesh = THREE.Mesh.new( geometry )
   scene.add( mesh )
+  document["slide4"] <= renderer.domElement
   renderer.render( scene, camera )
 
 def percent(xhr):
@@ -58,7 +51,6 @@ loader.load('./static/vtk/output.nrrd',
 
 # show 3d
 # document["slide4"] <= renderer.domElement
-# print(scene.getObjectByName('rabbit'))
 # renderer.render(scene, camera)
 # # animate(0)
 # print('reached here')

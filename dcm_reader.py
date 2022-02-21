@@ -1,11 +1,8 @@
-from csv import writer
 import matplotlib.pyplot as plt
 import numpy as np
 import pydicom
 import glob
 from os.path import join, dirname, realpath
-import pyvista as pv
-import vtk
 import nrrd
 
 IMG_FOLDER = join(dirname(realpath(__file__)), 'static/img/')
@@ -23,12 +20,15 @@ def read():
 
   slices = sorted(slices, key=lambda s:s.ImagePositionPatient[2])
 
+  return slices
+
+def create_array(slices):
   # pixel aspects, assuming all slices are the same
   ps = slices[0].PixelSpacing
   ss = slices[0].SliceThickness
-  ax_aspect = ps[1]/ps[0]
-  sag_aspect = ps[1]/ss
-  cor_aspect = ss/ps[0]
+  # ax_aspect = ps[1]/ps[0]
+  # sag_aspect = ps[1]/ss
+  # cor_aspect = ss/ps[0]
 
   # create 3D array
   img_shape = list(slices[0].pixel_array.shape)
@@ -40,48 +40,22 @@ def read():
     img2d = s.pixel_array
     img3d[:, :, i] = img2d
 
+  return img3d, img_shape
+
+
+def render_img(img3d, img_shape):
   # axial
-  plt.imshow(img3d[:, :, img_shape[2]//2])
-  plt.axis('off')
-  plt.savefig(join(IMG_FOLDER, 'axial.png'), bbox_inches='tight', pad_inches = 0)
+  plt.imsave(join(IMG_FOLDER, 'axial.png'), img3d[:, :, img_shape[2]//2])
 
   # sagittal
-  plt.imshow(img3d[:, img_shape[1]//2, :])
-  plt.axis('off')
-  plt.savefig(join(IMG_FOLDER, 'sagittal.png'), bbox_inches='tight', pad_inches = 0)
+  plt.imsave(join(IMG_FOLDER, 'sagittal.png'), img3d[:, img_shape[1]//2, :])
   
   # coronal
-  plt.imshow(img3d[img_shape[0]//2, :, :].T)
-  plt.axis('off')
-  plt.savefig(join(IMG_FOLDER, 'coronal.png'), bbox_inches='tight', pad_inches = 0)
+  plt.imsave(join(IMG_FOLDER, 'coronal.png'), img3d[img_shape[0]//2, :, :].T)
 
-  # Create the 3D NumPy array of spatially referenced data
-  # This is spatially referenced such that the grid is 20 by 5 by 10
-  #   (nx by ny by nz)
-  # values = np.linspace(0, 10, 1000).reshape((20, 5, 10))
-  # img3d.shape
+  print('rendered images')
 
-  # Create the spatial reference
-  # grid = pv.UniformGrid()
-
-  # Set the grid dimensions: shape because we want to inject our values on the
-  #   POINT data
-  # grid.dimensions = img3d.shape
-
-  # Edit the spatial reference
-  # grid.origin = (100, 33, 55.6)  # The bottom left corner of the data set
-  # grid.spacing = (1, 5, 2)  # These are the cell sizes along each axis
-
-  # Add the data values to the cell data
-  # grid.point_data["values"] = img3d.flatten(order="F")  # Flatten the array!
-
-  # print(grid)
-  # pl = pv.Plotter()
-  # _ = pl.add_volume(img3d, cmap='viridis')
-  # pl.export_html("brain.html")
-  # pl.show()
-  # filepath = join(VTK_FOLDER, 'test.vtk')
-  # grid.save(filepath, binary=True)
-
+def render_nrrd(img3d):
+  # write to NRRD
   nrrd.write('output.nrrd', img3d, index_order='C')
-  print('reached here')
+  print('rendered nrrd')

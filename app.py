@@ -52,12 +52,12 @@ def create_app(test_config=None):
     # route to index
     @app.route('/render', methods=('GET', 'POST'))
     def render():
-        if request.method == 'GET':
-            return 'KEKW'
-        
         if request.method == 'POST':
             # read the files
-            dcm_reader.read()
+            slices = dcm_reader.read()
+            img3d, img_shape = dcm_reader.create_array(slices)
+            dcm_reader.render_img(img3d, img_shape)
+            dcm_reader.render_nrrd(img3d)
             return 'Finished rendering'
 
     return app
