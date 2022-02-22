@@ -2,105 +2,98 @@ from browser import document, html, ajax, window
 
 THREE = window.THREE
 NRRD = THREE.NRRDLoader
-VRS = window.VolumeShader
-# WebGL = window.WebGL
 
-def render():
-  renderer.render(scene, camera)
+def init():
+  # Scene
+  scene = THREE.Scene.new()
 
-# Scene
-scene = THREE.Scene.new()
+  # Renderer
+  renderer = THREE.WebGLRenderer.new()
+  renderer.setPixelRatio(window.devicePixelRatio)
+  renderer.setSize(window.innerWidth, window.innerHeight)
+  # renderer.setClearColor(0xEEEEEE)
+  document["test"] <= renderer.domElement
 
-# Renderer
-renderer = THREE.WebGLRenderer.new()
-renderer.setPixelRatio(window.devicePixelRatio)
-renderer.setSize(window.innerWidth, window.innerHeight)
-document["slide4"] <= renderer.domElement
+  # Camera
+  h = 512
+  aspect = window.innerWidth / window.innerHeight
+  camera = THREE.OrthographicCamera.new( - h * aspect / 2, h * aspect / 2, h / 2, -h / 2, 0.005 , 1e10)
+  camera.position.set(-192, -137, 192)
+  camera.up.set(0, 0, 1)
+  scene.add(camera)
 
-# Camera
-h = 512
-aspect = window.innerWidth / window.innerHeight
-camera = THREE.OrthographicCamera( - h * aspect / 2, h * aspect / 2, h / 2, -h / 2, 1 , 1000)
-camera.position.set(-64, -64, 128)
-camera.up.set(0, 0, 1)
-scene.add(camera)
+  def render(self):
+    renderer.render(scene, camera)
 
-# Controls
-controls = THREE.OrbitControls.new(camera, renderer.domElement)
-controls.addEventListener('change', render)
-controls.target.set(64, 64, 128)
-controls.minzoom = 0.5
-controls.maxzoom = 4
-controls.enablePan = False
-controls.update()
-
-# Load NDDR
-loader = NRRD.new()
-loader.load('./static/vtk/output.nrrd',
-            addob,
-            lambda xhr: print((xhr.loaded / xhr.total * 100), "% loaded"))
-
-def animate():
-  window.requestAnimationFrame(animate)
+  # Controls
+  controls = THREE.OrbitControls.new(camera, renderer.domElement)
+  controls.addEventListener('change', render)
+  controls.target.set(192, 137, 192)
+  controls.minzoom = 0.5
+  controls.maxzoom = 4
+  controls.enablePan = False
   controls.update()
-  renderer.render(scene, camera)
 
-def addob(volume):
-  # Texture
-  texture = THREE.DataTexture3D.new( volume.data, volume.xLength, volume.yLength, volume.zLength )
-  texture.format = THREE.RedFormat
-  texture.type = THREE.FloatType
-  texture.minFilter = texture.magFilter = THREE.LinearFilter
-  texture.unpackAlignment = 1
-  texture.needsUpdate = True
+  def addob(volume):
+    # Texture
+    texture = THREE.DataTexture3D.new( volume.data, volume.xLength, volume.yLength, volume.zLength )
+    texture.format = THREE.RedFormat
+    texture.type = THREE.FloatType
+    texture.minFilter = texture.magFilter = THREE.LinearFilter
+    texture.unpackAlignment = 1
+    texture.needsUpdate = True
 
-  # Colormap
-  cmtextures = {
-    'viridis': THREE.TextureLoader().load('textures/cm_viridis.png', render).new(),
-    'gray': THREE.TextureLoader().load('textures/cm_gray.png', render).new()
-  }
+    # Colormap
+    cmtextures = {
+      'viridis': THREE.TextureLoader.new().load('./static/textures/cm_viridis.png', renderer.render(scene, camera)),
+      'gray': THREE.TextureLoader.new().load('./static/textures/cm_gray.png', renderer.render(scene, camera))
+    }
 
-  # GUI
-  volconfig = { 'clim1': 0, 'clim2': 1, 'renderstyle': 'iso', 'isothreshold': 0.15, 'colormap': 'viridis' }
+    # GUI
+    volconfig = { 'clim1': 0, 'clim2': 1, 'renderstyle': 'mip', 'isothreshold': 0.15, 'colormap': 'viridis' }
 
-  # Material
-  shader = VRS.VolumeRenderShaper1
-  uniforms = THREE.UniformsUtils.clone(shader.uniforms)
+    # Material
+    shader = THREE.VolumeRenderShader1
+    uniforms = THREE.UniformsUtils.clone(shader.uniforms)
 
-  uniforms[ 'u_data' ].value = texture
-  uniforms[ 'u_size' ].value.set( volume.xLength, volume.yLength, volume.zLength )
-  uniforms[ 'u_clim' ].value.set( volconfig.clim1, volconfig.clim2 )
-  uniforms[ 'u_renderstyle' ].value = 0 if volconfig.renderstyle == 'mip' else 1 # 0: MIP, 1: ISO
-  # uniforms[ 'u_renderthreshold' ].value = volconfig.isothreshold # For ISO renderstyle
-  uniforms[ 'u_cmdata' ].value = cmtextures[ volconfig.colormap ]
+    uniforms[ 'u_data' ].value = texture
+    uniforms[ 'u_size' ].value.set( volume.xLength, volume.yLength, volume.zLength )
+    uniforms[ 'u_clim' ].value.set( volconfig['clim1'], volconfig['clim2'] )
+    uniforms[ 'u_renderstyle' ].value = 0 if volconfig['renderstyle'] == 'mip' else 1 # 0: MIP, 1: ISO
+    # uniforms[ 'u_renderthreshold' ].value = volconfig.isothreshold # For ISO renderstyle
+    uniforms[ 'u_cmdata' ].value = cmtextures[ volconfig['colormap'] ]
 
-  material = THREE.ShaderMaterial.new( {
-					'uniforms': uniforms,
-					'vertexShader': shader.vertexShader,
-					'fragmentShader': shader.fragmentShader,
-					'side': THREE.BackSide # The volume shader uses the backface as its "reference point"
-				} )
+    material = THREE.ShaderMaterial.new( {
+            'uniforms': uniforms,
+            'vertexShader': shader.vertexShader,
+            'fragmentShader': shader.fragmentShader,
+            'side': THREE.BackSide # The volume shader uses the backface as its "reference point"
+          } )
 
-  # THREE.Mesh
-  geometry = THREE.BoxGeometry.new( volume.xLength, volume.yLength, volume.zLength )
-  geometry.translate( volume.xLength / 2 - 0.5, volume.yLength / 2 - 0.5, volume.zLength / 2 - 0.5 )
+    # THREE.Mesh
+    geometry = THREE.BoxGeometry.new( volume.xLength, volume.yLength, volume.zLength )
+    geometry.translate( volume.xLength / 2 - 0.5, volume.yLength / 2 - 0.5, volume.zLength / 2 - 0.5 )
 
-  mesh = THREE.Mesh.new( geometry, material )
-  scene.add( mesh )
-  render()
+    # test material
+    material = THREE.MeshBasicMaterial.new({
+      'color': 0xFF0000
+    })
 
-  # THREE.Mesh
-  geometry = THREE.BoxGeometry.new( volume.xLength, volume.yLength, volume.zLength )
-  geometry.translate( volume.xLength / 2 - 0.5, volume.yLength / 2 - 0.5, volume.zLength / 2 - 0.5 )
+    mesh = THREE.Mesh.new( geometry, material )
+    scene.add( mesh )
+    renderer.render(scene, camera)
+  
+  # Load NDDR
+  loader = NRRD.new()
+  loader.load('./static/nrrd/output.nrrd',
+              addob,
+              lambda xhr: print((xhr.loaded / xhr.total * 100), "% loaded"),
+              lambda e: print(e))
 
-  mesh = THREE.Mesh.new( geometry, material)
-  scene.add( mesh )
-  render()
+init()
 
 def percent(xhr):
   document['percentage'].text = '{}'.format(int(xhr.loaded / xhr.total * 100)) + "% loaded\n"
-
-
 
 def upload_ok(req):
     print(req.text)
@@ -129,25 +122,8 @@ def showimg(req):
     panel2 <= html.IMG(src='/static/img/sagittal.png')
     panel3 <= html.IMG(src='/static/img/coronal.png')
 
-    
-
-# def loadimg(ev):
-#   panel1 = document['slider1']
-#   panel2 = document['slider2']
-#   panel3 = document['slider3']
-#   panel1.clear()
-#   panel2.clear()
-#   panel3.clear()
-
-#   # dcm files
-#   files = document['myfile'].files[0]
-#   print(window.URL.createObjectURL(files))
-#   print(dcm_reader.read(window.URL.createObjectURL(files)))
-
-#   # render img
-#   files = document['myfile'].files[0]
-#   panel1 <= html.IMG(src=window.URL.createObjectURL(files), width=300, height=300)
+    # display 3d
+    init()
 
 document["upload"].bind("click", submit)
 document["loadimg"].bind("click", req_render)
-# document["myfile"].bind("onchange", loadimg)

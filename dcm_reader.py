@@ -7,7 +7,7 @@ import nrrd
 
 IMG_FOLDER = join(dirname(realpath(__file__)), 'static/img/')
 DCM_FOLDER = join(dirname(realpath(__file__)), 'static/dcm/')
-VTK_FOLDER = join(dirname(realpath(__file__)), 'static/vtk/')
+NRRD_FOLDER = join(dirname(realpath(__file__)), 'static/nrrd/')
 
 def read():
   slices = []
@@ -40,6 +40,11 @@ def create_array(slices):
     img2d = s.pixel_array
     img3d[:, :, i] = img2d
 
+  print(img3d.dtype)
+  if img3d.dtype == np.float64:
+    img3d = img3d.astype(np.float32)
+    print(img3d.dtype)
+
   return img3d, img_shape
 
 
@@ -57,5 +62,5 @@ def render_img(img3d, img_shape):
 
 def render_nrrd(img3d):
   # write to NRRD
-  nrrd.write('output.nrrd', img3d, index_order='C')
+  nrrd.write(join(NRRD_FOLDER, 'output.nrrd'), img3d, index_order='F')
   print('rendered nrrd')
