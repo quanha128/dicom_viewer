@@ -2,6 +2,10 @@ from browser import document, html, ajax, window
 
 THREE = window.THREE
 NRRD = THREE.NRRDLoader
+# WebGL = window.WebGL
+
+# if WebGL.isWebGL2Available() == False:
+# 	document <= WebGL.getWebGL2ErrorMessage()
 
 def init():
   # Scene
@@ -9,10 +13,12 @@ def init():
 
   # Renderer
   renderer = THREE.WebGLRenderer.new()
+  slide4 = document['slide4']
   renderer.setPixelRatio(window.devicePixelRatio)
-  renderer.setSize(window.innerWidth, window.innerHeight)
+  # renderer.setSize(window.innerWidth, window.innerHeight)
+  renderer.setSize(slide4.clientWidth, slide4.clientHeight)
   # renderer.setClearColor(0xEEEEEE)
-  document["test"] <= renderer.domElement
+  document["slide4"] <= renderer.domElement
 
   # Camera
   h = 512
@@ -28,7 +34,7 @@ def init():
   # Controls
   controls = THREE.OrbitControls.new(camera, renderer.domElement)
   controls.addEventListener('change', render)
-  controls.target.set(192, 137, 192)
+  controls.target.set(64, 64, 128)
   controls.minzoom = 0.5
   controls.maxzoom = 4
   controls.enablePan = False
@@ -39,14 +45,14 @@ def init():
     texture = THREE.DataTexture3D.new( volume.data, volume.xLength, volume.yLength, volume.zLength )
     texture.format = THREE.RedFormat
     texture.type = THREE.FloatType
-    texture.minFilter = texture.magFilter = THREE.LinearFilter
+    texture.minFilter = texture.magFilter = THREE.NearestFilter 
     texture.unpackAlignment = 1
     texture.needsUpdate = True
 
     # Colormap
     cmtextures = {
-      'viridis': THREE.TextureLoader.new().load('./static/textures/cm_viridis.png', renderer.render(scene, camera)),
-      'gray': THREE.TextureLoader.new().load('./static/textures/cm_gray.png', renderer.render(scene, camera))
+      'viridis': THREE.TextureLoader.new().load('./static/textures/cm_viridis.png', render),
+      'gray': THREE.TextureLoader.new().load('./static/textures/cm_gray.png', render)
     }
 
     # GUI
@@ -70,14 +76,26 @@ def init():
             'side': THREE.BackSide # The volume shader uses the backface as its "reference point"
           } )
 
+    # for key in uniforms:
+    #   for inkey in uniforms[key]:
+    #     print(inkey, ':', uniforms[key][inkey])
+    # global image
+    # for i in uniforms['u_data']:
+    #   for j in uniforms['u_data'][i]:
+    #     if j == 'image':
+    #       image = uniforms['u_data'][i][j]
+    # for i in image:
+    #   print(i, image[i])
+
     # THREE.Mesh
     geometry = THREE.BoxGeometry.new( volume.xLength, volume.yLength, volume.zLength )
     geometry.translate( volume.xLength / 2 - 0.5, volume.yLength / 2 - 0.5, volume.zLength / 2 - 0.5 )
 
     # test material
-    material = THREE.MeshBasicMaterial.new({
-      'color': 0xFF0000
-    })
+    # material = THREE.MeshBasicMaterial.new({
+    #   'color': 0xFF0000,
+    #   'opacity': 0.8
+    # })
 
     mesh = THREE.Mesh.new( geometry, material )
     scene.add( mesh )
@@ -85,12 +103,11 @@ def init():
   
   # Load NDDR
   loader = NRRD.new()
-  loader.load('./static/nrrd/output.nrrd',
+  loader.load('./static/nrrd/stent.nrrd',
               addob,
               lambda xhr: print((xhr.loaded / xhr.total * 100), "% loaded"),
               lambda e: print(e))
 
-init()
 
 def percent(xhr):
   document['percentage'].text = '{}'.format(int(xhr.loaded / xhr.total * 100)) + "% loaded\n"
