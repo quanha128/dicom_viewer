@@ -2,6 +2,7 @@ from browser import document, html, ajax, window
 
 THREE = window.THREE
 NRRD = THREE.NRRDLoader
+LIL = window.lil
 # WebGL = window.WebGL
 
 # if WebGL.isWebGL2Available() == False:
@@ -17,8 +18,8 @@ def init():
   renderer.setPixelRatio(window.devicePixelRatio)
   # renderer.setSize(window.innerWidth, window.innerHeight)
   renderer.setSize(slide4.clientWidth, slide4.clientHeight)
-  # renderer.setClearColor(0xEEEEEE)
-  document["slide4"] <= renderer.domElement
+  renderer.setClearColor(0xEEEEEE)
+  slide4 <= renderer.domElement
 
   # Camera
   h = 512
@@ -28,7 +29,7 @@ def init():
   camera.up.set(0, 0, 1)
   scene.add(camera)
 
-  def render(self):
+  def render(*args):
     renderer.render(scene, camera)
 
   # Controls
@@ -39,7 +40,6 @@ def init():
   controls.maxzoom = 4
   controls.enablePan = False
   controls.update()
-
   def addob(volume):
     # Texture
     texture = THREE.DataTexture3D.new( volume.data, volume.xLength, volume.yLength, volume.zLength )
@@ -56,7 +56,8 @@ def init():
     }
 
     # GUI
-    volconfig = { 'clim1': 0, 'clim2': 1, 'renderstyle': 'mip', 'isothreshold': 0.15, 'colormap': 'viridis' }
+    global volconfig
+    volconfig = { 'clim1': 0, 'clim2': 1, 'renderstyle': 'iso', 'isothreshold': 0.10, 'colormap': 'viridis' }
 
     # Material
     shader = THREE.VolumeRenderShader1
@@ -66,7 +67,7 @@ def init():
     uniforms[ 'u_size' ].value.set( volume.xLength, volume.yLength, volume.zLength )
     uniforms[ 'u_clim' ].value.set( volconfig['clim1'], volconfig['clim2'] )
     uniforms[ 'u_renderstyle' ].value = 0 if volconfig['renderstyle'] == 'mip' else 1 # 0: MIP, 1: ISO
-    # uniforms[ 'u_renderthreshold' ].value = volconfig.isothreshold # For ISO renderstyle
+    uniforms[ 'u_renderthreshold' ].value = volconfig['isothreshold'] # For ISO renderstyle
     uniforms[ 'u_cmdata' ].value = cmtextures[ volconfig['colormap'] ]
 
     material = THREE.ShaderMaterial.new( {
@@ -76,31 +77,33 @@ def init():
             'side': THREE.BackSide # The volume shader uses the backface as its "reference point"
           } )
 
-    # for key in uniforms:
-    #   for inkey in uniforms[key]:
-    #     print(inkey, ':', uniforms[key][inkey])
-    # global image
-    # for i in uniforms['u_data']:
-    #   for j in uniforms['u_data'][i]:
-    #     if j == 'image':
-    #       image = uniforms['u_data'][i][j]
-    # for i in image:
-    #   print(i, image[i])
+    def updateUniforms(*args):
+      material['uniforms'][ 'u_clim' ].value.set( volconfig['clim1'], volconfig['clim2'] )
+      material['uniforms'][ 'u_renderstyle' ].value = 0 if volconfig['renderstyle'] == 'mip' else 1 # 0: MIP, 1: ISO
+      material['uniforms'][ 'u_renderthreshold' ].value = volconfig['isothreshold'] # For ISO renderstyle
+      material['uniforms'][ 'u_cmdata' ].value = cmtextures[ volconfig['colormap'] ]
+
+      for key in material['uniforms']:
+        print(key, ':', material['uniforms'][key])
+
+      render()
 
     # THREE.Mesh
     geometry = THREE.BoxGeometry.new( volume.xLength, volume.yLength, volume.zLength )
     geometry.translate( volume.xLength / 2 - 0.5, volume.yLength / 2 - 0.5, volume.zLength / 2 - 0.5 )
 
-    # test material
-    # material = THREE.MeshBasicMaterial.new({
-    #   'color': 0xFF0000,
-    #   'opacity': 0.8
-    # })
-
     mesh = THREE.Mesh.new( geometry, material )
     scene.add( mesh )
-    renderer.render(scene, camera)
-  
+
+    render()
+
+    gui = LIL.GUI.new()
+    gui.add( volconfig, 'clim1', 0, 1, 0.01 ).onChange( updateUniforms )
+    gui.add( volconfig, 'clim2', 0, 1, 0.01 ).onChange( updateUniforms )
+    gui.add( volconfig, 'colormap', { 'gray': 'gray', 'viridis': 'viridis' } ).onChange( updateUniforms )
+    gui.add( volconfig, 'renderstyle', { 'mip': 'mip', 'iso': 'iso' } ).onChange( updateUniforms )
+    gui.add( volconfig, 'isothreshold', 0, 1, 0.01 ).onChange( updateUniforms )
+
   # Load NDDR
   loader = NRRD.new()
   loader.load('./static/nrrd/stent.nrrd',
@@ -108,6 +111,7 @@ def init():
               lambda xhr: print((xhr.loaded / xhr.total * 100), "% loaded"),
               lambda e: print(e))
 
+init()
 
 def percent(xhr):
   document['percentage'].text = '{}'.format(int(xhr.loaded / xhr.total * 100)) + "% loaded\n"
@@ -127,9 +131,9 @@ def showimg(req):
   if req.text == 'Finished rendering':
     print("Response received")
     # get documents
-    panel1 = document['slider1']
-    panel2 = document['slider2']
-    panel3 = document['slider3']
+    panel1 = document['slide1']
+    panel2 = document['slide2']
+    panel3 = document['slide3']
     panel1.clear()
     panel2.clear()
     panel3.clear()
@@ -140,7 +144,7 @@ def showimg(req):
     panel3 <= html.IMG(src='/static/img/coronal.png')
 
     # display 3d
-    init()
+    # init()
 
 document["upload"].bind("click", submit)
 document["loadimg"].bind("click", req_render)

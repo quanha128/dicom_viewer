@@ -3,8 +3,8 @@
 }
 
 .wrapper{
-    width: 300px;
-    height: 300px; 
+    width: 500px;
+    height: 500px; 
     overflow-x:scroll;     
     white-space: nowrap;
     display: inline-block;
@@ -12,7 +12,7 @@
 
 .slide{
     background: #ccc;
-    width: 300px;
-    height: 300px;
+    width: 500px;
+    height: 500px;
     display: inline-block;
 }

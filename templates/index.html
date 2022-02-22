@@ -10,6 +10,7 @@
     <script src="https://threejs.org/examples/js/libs/fflate.min.js"></script>
     <script src="https://threejs.org/examples/js/misc/Volume.js"></script>
     <script src="https://threejs.org/examples/js/shaders/VolumeShader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lil-gui@0.16"></script>
     <!-- <script src="https://threejs.org/examples/js/capabilities/WebGL.js"></script> -->
     <script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
     <title>Index</title>
@@ -27,17 +28,17 @@
     <div class="outer">
         <div class="wrapper">   
             <div id="slider1" class="text-center">
-                <div class="slide">Axial</div>
+                <div class="slide" id="slide1">Axial</div>
             </div>
         </div>
         <div class="wrapper">   
           <div id="slider2" class="text-center">
-              <div class="slide">Sagittal</div>
+              <div class="slide" id="slide2">Sagittal</div>
           </div>
         </div>
         <div class="wrapper">   
           <div id="slider3" class="text-center">
-              <div class="slide">Coronal</div>
+              <div class="slide" id="slide3">Coronal</div>
           </div>
         </div>
         <div class="wrapper">   
