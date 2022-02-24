@@ -18,7 +18,7 @@ def init():
   renderer.setPixelRatio(window.devicePixelRatio)
   # renderer.setSize(window.innerWidth, window.innerHeight)
   renderer.setSize(slide4.clientWidth, slide4.clientHeight)
-  renderer.setClearColor(0xEEEEEE)
+  renderer.setClearColor(0xcccccc)
   slide4 <= renderer.domElement
 
   # Camera
@@ -56,7 +56,7 @@ def init():
     }
 
     # GUI
-    global volconfig
+    # global volconfig
     volconfig = { 'clim1': 0, 'clim2': 1, 'renderstyle': 'iso', 'isothreshold': 0.10, 'colormap': 'viridis' }
 
     # Material
@@ -77,15 +77,29 @@ def init():
             'side': THREE.BackSide # The volume shader uses the backface as its "reference point"
           } )
 
-    def updateUniforms(*args):
+    def updateClim1(val):
+      volconfig['clim1'] = val
       material['uniforms'][ 'u_clim' ].value.set( volconfig['clim1'], volconfig['clim2'] )
+      render()
+
+    def updateClim2(val):
+      volconfig['clim2'] = val
+      material['uniforms'][ 'u_clim' ].value.set( volconfig['clim1'], volconfig['clim2'] )
+      render()
+
+    def updateRenderstyle(val):
+      volconfig['renderstyle'] = val
       material['uniforms'][ 'u_renderstyle' ].value = 0 if volconfig['renderstyle'] == 'mip' else 1 # 0: MIP, 1: ISO
+      render()
+
+    def updateThreshold(val):
+      volconfig['isothreshold'] = val
       material['uniforms'][ 'u_renderthreshold' ].value = volconfig['isothreshold'] # For ISO renderstyle
+      render()
+
+    def updateColormap(val):
+      volconfig['colormap'] = val
       material['uniforms'][ 'u_cmdata' ].value = cmtextures[ volconfig['colormap'] ]
-
-      for key in material['uniforms']:
-        print(key, ':', material['uniforms'][key])
-
       render()
 
     # THREE.Mesh
@@ -98,20 +112,20 @@ def init():
     render()
 
     gui = LIL.GUI.new()
-    gui.add( volconfig, 'clim1', 0, 1, 0.01 ).onChange( updateUniforms )
-    gui.add( volconfig, 'clim2', 0, 1, 0.01 ).onChange( updateUniforms )
-    gui.add( volconfig, 'colormap', { 'gray': 'gray', 'viridis': 'viridis' } ).onChange( updateUniforms )
-    gui.add( volconfig, 'renderstyle', { 'mip': 'mip', 'iso': 'iso' } ).onChange( updateUniforms )
-    gui.add( volconfig, 'isothreshold', 0, 1, 0.01 ).onChange( updateUniforms )
+    gui.add( volconfig, 'clim1', 0, 1, 0.01 ).onChange( updateClim1 )
+    gui.add( volconfig, 'clim2', 0, 1, 0.01 ).onChange( updateClim2 )
+    gui.add( volconfig, 'colormap', { 'gray': 'gray', 'viridis': 'viridis' } ).onChange( updateColormap )
+    gui.add( volconfig, 'renderstyle', { 'mip': 'mip', 'iso': 'iso' } ).onChange( updateRenderstyle )
+    gui.add( volconfig, 'isothreshold', 0, 1, 0.01 ).onChange( updateThreshold )
 
   # Load NDDR
   loader = NRRD.new()
-  loader.load('./static/nrrd/stent.nrrd',
+  loader.load('./static/nrrd/output.nrrd',
               addob,
               lambda xhr: print((xhr.loaded / xhr.total * 100), "% loaded"),
               lambda e: print(e))
 
-init()
+# init()
 
 def percent(xhr):
   document['percentage'].text = '{}'.format(int(xhr.loaded / xhr.total * 100)) + "% loaded\n"
@@ -144,7 +158,7 @@ def showimg(req):
     panel3 <= html.IMG(src='/static/img/coronal.png')
 
     # display 3d
-    # init()
+    init()
 
 document["upload"].bind("click", submit)
 document["loadimg"].bind("click", req_render)
